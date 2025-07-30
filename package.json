@@ -1,0 +1,29 @@
+{
+    "name": "uniprocess",
+    "version": "1.0.0",
+    "description": "Gestionnaire de processus en arrière-plan.",
+    "homepage": "https://github.com/d3Ita/Uniprocess#readme",
+    "bugs": {
+        "url": "https://github.com/d3Ita/Uniprocess/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/d3Ita/Uniprocess.git"
+    },
+    "license": "MIT",
+    "author": "kikzill",
+    "type": "module",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+        "format": "prettier --write ."
+    },
+    "devDependencies": {
+        "jest": "^30.0.5",
+        "prettier": "^3.6.2"
+    },
+    "dependencies": {
+        "pidusage": "^4.0.1"
+    }
+}
