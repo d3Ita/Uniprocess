@@ -24,6 +24,14 @@
         "prettier": "^3.6.2"
     },
     "dependencies": {
-        "pidusage": "^4.0.1"
+        "chalk": "^5.4.1",
+        "cli-table3": "^0.6.5",
+        "commander": "^14.0.0",
+        "node-fetch": "^3.3.2",
+        "pidusage": "^4.0.1",
+        "tty-table": "^4.2.3"
+    },
+    "bin": {
+        "uniprocess": "./bin/uniprocess.js"
     }
 }

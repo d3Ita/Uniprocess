@@ -5,7 +5,7 @@ import pidusage from 'pidusage';
  * @param {object} child - Processus spawné (doit avoir une propriété `pid`)
  * @returns {Promise<object>} - CPU (%) et mémoire (MB)
  */
-export default async function getProcessUsage(child) {
+export async function getProcessUsage(child) {
     try {
         const stats = await pidusage(child.pid);
         return {
@@ -14,5 +14,19 @@ export default async function getProcessUsage(child) {
         };
     } catch (err) {
         return { error: 'Process terminé ou inaccessible' };
+    }
+}
+
+/**
+ * Vérifie si un processus est toujours en cours d'exécution.
+ * @param {object} child - Processus ou PID.
+ * @returns {boolean} - True si le processus existe, sinon false.
+ */
+export function isRunning(child) {
+    try {
+        process.kill(child.pid, 0); // 0 = juste un test, ne tue pas le process
+        return true;
+    } catch (err) {
+        return false; // Erreur = le processus n'existe pas ou pas d'accès
     }
 }
