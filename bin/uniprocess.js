@@ -3,9 +3,55 @@ import { Command } from 'commander';
 import fetch from 'node-fetch';
 import chalk from 'chalk';
 import Table from 'cli-table3';
+import { spawn } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SERVER_PATH = path.resolve(__dirname, '../index.js');
 
 const program = new Command();
 const API = 'http://127.0.0.1:5678';
+const PID_FILE = path.resolve('/tmp/uniprocess_daemon.pid'); // PID du serveur
+
+// ---- DAEMON START ----
+program
+  .command('daemon-start')
+  .description('Lance le serveur de gestion des daemons en arrière-plan')
+  .action(() => {
+    if (fs.existsSync(PID_FILE)) {
+      console.log(chalk.yellow('Daemon déjà lancé.'));
+      return;
+    }
+    const child = spawn('node', [SERVER_PATH], {
+      detached: true,
+      stdio: 'ignore'
+    });
+    child.unref();
+    fs.writeFileSync(PID_FILE, child.pid.toString());
+    console.log(chalk.green(`Daemon lancé avec PID ${child.pid}`));
+  });
+
+// ---- DAEMON STOP ----
+program
+  .command('daemon-stop')
+  .description('Arrête le serveur de gestion des daemons')
+  .action(() => {
+    if (!fs.existsSync(PID_FILE)) {
+      console.log(chalk.red('Aucun daemon n’est lancé.'));
+      return;
+    }
+    const pid = parseInt(fs.readFileSync(PID_FILE, 'utf8'));
+    try {
+      process.kill(pid);
+      fs.unlinkSync(PID_FILE);
+      console.log(chalk.green(`Daemon (PID ${pid}) stoppé.`));
+    } catch (err) {
+      console.log(chalk.red(`Impossible de stopper le daemon : ${err.message}`));
+    }
+  });
+
 
 program
   .command('start')
